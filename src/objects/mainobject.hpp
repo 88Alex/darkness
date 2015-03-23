@@ -3,6 +3,8 @@
 
 #include <string>
 #include <map>
+#include "object.hpp"
+#include "manipulator.hpp"
 
 using namespace std;
 
@@ -12,7 +14,7 @@ class MainObject
 {
 	public:
 		MainObject();
-		// NOTE: The names of the following functions are as specified by language reference.
+		// Note: The names of the following functions are as specified by language reference.
 		// I did not make them up!
 		void twist(ObjectType type, string name);
 		Object* getObject(string name);

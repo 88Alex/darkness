@@ -5,11 +5,14 @@
 #include <map>
 #include <cinttypes>
 #include <typeinfo>
+#include <random>
+#include <algorithm>
 #include "object.hpp"
+#include "../error.hpp"
 
 using namespace std;
 
-typedef enum { BYTE, SHORT, INT, LONG } VarSize;
+typedef enum { BYTE = 8, SHORT = 16, INT = 32, LONG = 64 } VarSize;
 
 class Variable
 {
@@ -19,18 +22,20 @@ class Variable
 		VarSize getSize();
 		uint getDisposition();
 		void setValue(uint64_t val);
-		map<string, Variable> getServants();
-		void addServant(string varname, Variable var);
+		map<string, Variable*> getServants();
+		void addServant(string varname, Variable *var);
 		bool isMaster();
+		void tick();
 	private:
 		VarSize size;
 		uint64_t value;
 		uint disposition;
 		bool master;
-		map<string, Variable> servants;
+		map<string, Variable*> servants;
+		int ticksSinceUsed;
 };
 
-class Manipulator
+class Manipulator : public Object
 {
 	public:
 		Manipulator();
@@ -48,8 +53,11 @@ class Manipulator
 		void multiply(string varname, uint64_t val1, uint64_t val2);
 		void divide(string varname, uint64_t val1, uint64_t val2);
 		uint64_t get(string varname);
+		void tick();
 	private:
-		map<string, Variable> variables;
+		vector<string> varnames;
+		vector<Variable*> variables;
+		Variable* variable(string varname);
 };
 
 #endif // #ifndef MANIPULATOR_HPP_INCLUDED

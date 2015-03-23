@@ -8,6 +8,9 @@
 #include <fstream>
 #include <cstdlib>
 #include <vector>
+#include "error.hpp"
+#include "objects/mainobject.hpp"
+#include "objects/manipulator.hpp"
 
 using namespace std;
 
