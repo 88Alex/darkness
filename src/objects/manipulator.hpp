@@ -22,7 +22,7 @@ class Variable
 		VarSize getSize();
 		uint getDisposition();
 		void setValue(uint64_t val);
-		map<string, Variable*> getServants();
+		vector<string> getServants();
 		void addServant(string varname, Variable *var);
 		bool isMaster();
 		void tick();
@@ -31,7 +31,8 @@ class Variable
 		uint64_t value;
 		uint disposition;
 		bool master;
-		map<string, Variable*> servants;
+		vector<string> servantNames;
+    vector<Variable*> servants;
 		int ticksSinceUsed;
 };
 
@@ -53,11 +54,13 @@ class Manipulator : public Object
 		void multiply(string varname, uint64_t val1, uint64_t val2);
 		void divide(string varname, uint64_t val1, uint64_t val2);
 		uint64_t get(string varname);
+    static uint64_t getFromAllManipulators(string varname);
 		void tick();
 	private:
 		vector<string> varnames;
 		vector<Variable*> variables;
 		Variable* variable(string varname);
+    static vector<Manipulator*> manipulators;
 };
 
 #endif // #ifndef MANIPULATOR_HPP_INCLUDED

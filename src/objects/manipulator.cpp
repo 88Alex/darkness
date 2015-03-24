@@ -1,12 +1,15 @@
 #include "manipulator.hpp"
 
+vector<Manipulator*> Manipulator::manipulators = vector<Manipulator*>();
+
 Variable::Variable(VarSize varsize, uint64_t val, uint disposition, bool master)
 {
 	size = varsize;
 	value = val;
 	this->disposition = disposition;
 	this->master = master;
-	servants = map<string, Variable*>();
+	servantNames = vector<string>();
+  servants = vector<Variable*>();
 	ticksSinceUsed = 0;
 }
 
@@ -44,18 +47,19 @@ void Variable::setValue(uint64_t val)
 	ticksSinceUsed = 0;
 }
 
-map<string, Variable*> Variable::getServants()
+vector<string> Variable::getServants()
 {
 	ticksSinceUsed = 0;
 	if(!master) throw Error();
-	return servants;
+	return servantNames;
 }
 
 void Variable::addServant(string varname, Variable *var)
 {
 	ticksSinceUsed = 0;
 	if(!master) throw Error();
-	servants.at(varname) = var;
+	servantNames.push_back(varname);
+  servants.push_back(var);
 }
 
 bool Variable::isMaster()
@@ -81,6 +85,7 @@ Manipulator::Manipulator()
 {
 	varnames = vector<string>();
 	variables = vector<Variable*>();
+  manipulators.push_back(this);
 }
 
 void Manipulator::manufactureMaster(string varname, uint disposition, VarSize size)
@@ -95,7 +100,7 @@ void Manipulator::manufactureServant(string varname, uint disposition, VarSize s
 {
 	if(count(varnames.begin(), varnames.end(), varname) > 0) throw Error();
 	Variable* var = new Variable(size, 0, disposition, false);
-	if(variable(mastername)->isMaster()) variable(mastername)->addServant(varname, &var);
+	if(variable(mastername)->isMaster()) variable(mastername)->addServant(varname, var);
 	varnames.push_back(varname);
 	variables.push_back(var);
 }
@@ -104,14 +109,12 @@ void Manipulator::kill(string varname)
 {
 	if(count(varnames.begin(), varnames.end(), varname) == 0) throw Error();
 	delete variable(varname);
-	variable(varname) = 0;
+	variables.at(distance(varnames.begin(), find(varnames.begin(), varnames.end(), varname))) = 0;
 }
 
 void Manipulator::suicide(string varname)
 {
-	if(count(varnames.begin(), varnames.end(), varname) == 0) throw Error();
-	delete variable(varname);
-	variable(varname) = 0;
+	kill(varname);
 }
 
 void Manipulator::void_()
@@ -120,36 +123,35 @@ void Manipulator::void_()
 	{
 		if(variables[i] == 0)
 		{
-			varnames.
+			varnames.erase(find(varnames.begin(), varnames.end(), varnames[i]));
+      variables.erase(find(variables.begin(), variables.end(), variables[i]));
 		}
 	}
 }
 
 void Manipulator::genocide(uint disposition)
 {
-	for(map<uint, Variable*>::iterator it = variables.begin(); it != variables.end(); it++)
-	{
-		if(it->second->getDisposition() == disposition)
-		{
-			delete it->second;
-			it->second = 0;
-		}
-	}
+	for(int i = 0; i < varnames.size(); i++)
+  {
+    if(variables.at(i)->getDisposition() == disposition)
+    {
+      kill(varnames.at(i));
+    }
+  }
 }
 
 void Manipulator::omnicide()
 {
-	for(map<uint, Variable*>::iterator it = variables.begin(); it != variables.end(); it++)
-	{
-		delete it->second;
-		it->second = 0;
-	}
+	for(int i = 0; i < varnames.size(); i++)
+  {
+    kill(varnames.at(i));
+  }
 }
 
 void Manipulator::chaos(string varname)
 {
 	default_random_engine generator;
-	uniform_int_distribution<uint64_t> distribution(0, (long) 1 << variables.at(strHash(varname))->getSize());
+	uniform_int_distribution<uint64_t> distribution(0, (long) 1 << variable(varname)->getSize());
 	variable(varname)->setValue(distribution(generator));
 }
 
@@ -190,11 +192,30 @@ uint64_t Manipulator::get(string varname)
 	return variable(varname)->getValue();
 }
 
+uint64_t Manipulator::getFromAllManipulators(string varname)
+{
+  for(int i = 0; i < manipulators.size(); i++)
+  {
+    Manipulator* m = manipulators.at(i);
+    uint64_t result;
+    try
+    {
+      result = m->get(varname);
+    }
+    catch(Error e)
+    {
+      continue;
+    }
+    return result;
+  }
+  throw Error();
+}
+
 Variable* Manipulator::variable(string varname)
 {
-	if(variables.count(strHash(varname)) >= 1)
+	if(count(varnames.begin(), varnames.end(), varname) >= 1)
 	{
-		return variables.at(strHash(varname));
+		return variables.at(distance(varnames.begin(), find(varnames.begin(), varnames.end(), varname)));
 	}
 	else
 	{
