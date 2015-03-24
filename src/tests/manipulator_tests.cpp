@@ -20,11 +20,10 @@ int main()
 	}
 	if(m.get("b") == 6)
 	{
-                cout << "Test 1 Part B Passed (b == 6)" << endl;
-        }
-        else
-        {
-                cout << "Test 1 Part B Failed! (b != 6) (b == " << m.get("b") << ")" << endl;
-        }
-
+    cout << "Test 1 Part B Passed (b == 6)" << endl;
+  }
+  else
+  {
+    cout << "Test 1 Part B Failed! (b != 6) (b == " << m.get("b") << ")" << endl;
+  }
 }
