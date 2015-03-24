@@ -19,11 +19,11 @@ int main()
 		cout << "Test 1 Part A Failed! (a != 5) (a == " << m.get("b") << ")" << endl;
 	}
 	if(m.get("b") == 6)
-	{ 
+	{
                 cout << "Test 1 Part B Passed (b == 6)" << endl;
         }
         else
-        { 
+        {
                 cout << "Test 1 Part B Failed! (b != 6) (b == " << m.get("b") << ")" << endl;
         }
 
