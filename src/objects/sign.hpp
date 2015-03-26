@@ -3,8 +3,9 @@
 
 #include <string>
 #include "manipulator.hpp"
+#include "object.hpp"
 
-class Sign
+class Sign : public Object
 {
   public:
     Sign();
@@ -18,6 +19,7 @@ class Sign
     uint64_t observe();
     uint64_t steal();
     string read(bool eraseAfterRead);
+    const ObjectType type = OT_SIGN;
   private:
     string val;
 };

@@ -1,6 +1,11 @@
 #ifndef OBJECT_HPP_INCLUDED
 #define OBJECT_HPP_INCLUDED
 
-class Object{};
+typedef enum { OT_MANIPULATOR, OT_ENTROPY, OT_STALKER, OT_SIGN, OT_NONE } ObjectType;
+
+class Object{
+  public:
+    const ObjectType type = OT_NONE;
+};
 
 #endif // #ifndef OBJECT_HPP_INCLUDED

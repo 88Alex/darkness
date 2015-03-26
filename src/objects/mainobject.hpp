@@ -5,10 +5,11 @@
 #include <map>
 #include "object.hpp"
 #include "manipulator.hpp"
+#include "entropy.hpp"
+#include "stalker.hpp"
+#include "sign.hpp"
 
 using namespace std;
-
-typedef enum { OT_MANIPULATOR, OT_ENTROPY, OT_STALKER, OT_SIGN } ObjectType;
 
 class MainObject
 {
@@ -18,6 +19,7 @@ class MainObject
 		// I did not make them up!
 		void twist(ObjectType type, string name);
 		Object* getObject(string name);
+    void break_(string error = "Program willingly terminated");
 		void consume(string name);
 		void empty();
 private:

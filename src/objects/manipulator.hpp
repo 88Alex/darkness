@@ -26,6 +26,7 @@ class Variable
 		void addServant(string varname, Variable *var);
 		bool isMaster();
 		void tick();
+    const ObjectType type = OT_MANIPULATOR;
 	private:
 		VarSize size;
 		uint64_t value;

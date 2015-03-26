@@ -8,8 +8,9 @@
 #include <cstdio>
 #include "manipulator.hpp"
 #include "../error.hpp"
+#include "object.hpp"
 
-class Stalker
+class Stalker : public Object
 {
   public:
     Stalker();
@@ -22,6 +23,7 @@ class Stalker
     void distant();
     void personal();
     void paracusia();
+    const ObjectType type = OT_STALKER;
   private:
     void checkInitialized();
     bool initialized;

@@ -27,6 +27,12 @@ void MainObject::twist(ObjectType type, string name)
 	}
 }
 
+void MainObject::break_(string error)
+{
+  cerr << error << endl;
+  throw CriticalError();
+}
+
 void MainObject::consume(string name)
 {
 	delete objects[name];
