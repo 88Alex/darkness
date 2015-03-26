@@ -9,12 +9,17 @@ using namespace std;
 
 class Error : public exception
 {
-	const char* what();
+	public:
+    const char* what();
 };
 
 class CriticalError : public exception
 {
-	const char* what();
+  public:
+    CriticalError(string message = "Murphy's Law is working correctly");
+    const char* what();
+  private:
+    string err;
 };
 
 class StalkerUninitializedError : public exception

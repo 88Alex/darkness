@@ -5,9 +5,14 @@ const char* Error::what()
 	return "An interesting occurence...";
 }
 
+CriticalError::CriticalError(string message)
+{
+  err = message;
+}
+
 const char* CriticalError::what()
 {
-	return "Murphy's Law is working correctly...";
+	return err.c_str();
 }
 
 const char* StalkerUninitializedError::what()

@@ -8,9 +8,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <vector>
-#include "error.hpp"
-#include "objects/mainobject.hpp"
-#include "objects/manipulator.hpp"
+#include "interpreter.hpp"
 
 using namespace std;
 
@@ -30,10 +28,6 @@ vector<string> parseFile(string filename)
 	}
 }
 
-int runScript(vector<string> lines)
-{
-	//
-}
 
 int main(int argc, char** argv)
 {
