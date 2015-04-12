@@ -8,6 +8,7 @@
 #include "entropy.hpp"
 #include "stalker.hpp"
 #include "sign.hpp"
+#include "../error.hpp"
 
 using namespace std;
 
@@ -22,6 +23,7 @@ class MainObject
     void break_(string error = "Program willingly terminated");
 		void consume(string name);
 		void empty();
+    ObjectType getObjType(string name);
 private:
 		map<string, Object*> objects;
 };

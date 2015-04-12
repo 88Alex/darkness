@@ -25,10 +25,8 @@ vector<string> parseFile(string filename)
 	while(!file.eof())
 	{
 		getline(file, line);
-    cout << "Read line: " << line << endl;
     result.push_back(line);
 	}
-  cout << "result[0] is " << result[0] << endl;
   return result;
 }
 

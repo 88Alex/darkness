@@ -23,7 +23,7 @@ void MainObject::twist(ObjectType type, string name)
 			objects[name] = new Sign();
 			break;
 		default:
-			exit(1); // TODO- perhaps display a meaningful error message?
+			throw Error();
 	}
 }
 
@@ -46,4 +46,22 @@ void MainObject::empty()
 		delete i->second;
 	}
 	objects.clear();
+}
+
+Object* MainObject::getObject(string name)
+{
+  if(objects.count(name) >= 1)
+  {
+    return objects[name];
+  }
+  else return 0;
+}
+
+ObjectType MainObject::getObjType(string name)
+{
+  if(objects.count(name) < 1)
+  {
+    return OT_NONE;
+  }
+  return objects[name]->type;
 }
