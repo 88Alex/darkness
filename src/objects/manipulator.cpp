@@ -187,12 +187,36 @@ void Manipulator::divide(string varname, uint64_t val1, uint64_t val2)
 	}
 }
 
+Variable* Manipulator::getMutable(string varname)
+{
+  return variable(varname);
+}
+
 uint64_t Manipulator::get(string varname)
 {
 	return variable(varname)->getValue();
 }
 
-uint64_t Manipulator::getFromAllManipulators(string varname)
+Variable* Manipulator::getFromAllManipulators(string varname)
+{
+  for(int i = 0; i < manipulators.size(); i++)
+  {
+    Manipulator* m = manipulators.at(i);
+    Variable* result;
+    try
+    {
+      result = m->getMutable(varname);
+    }
+    catch(Error e)
+    {
+      continue;
+    }
+    return result;
+  }
+  throw Error();
+}
+
+uint64_t Manipulator::getConstFromAllManipulators(string varname)
 {
   for(int i = 0; i < manipulators.size(); i++)
   {

@@ -26,7 +26,7 @@ class Variable
 		void addServant(string varname, Variable *var);
 		bool isMaster();
 		void tick();
-    const ObjectType type = OT_MANIPULATOR;
+    ObjectType getType() { return OT_MANIPULATOR; }
 	private:
 		VarSize size;
 		uint64_t value;
@@ -54,8 +54,10 @@ class Manipulator : public Object
 		void subtract(string varname, uint64_t val1, uint64_t val2);
 		void multiply(string varname, uint64_t val1, uint64_t val2);
 		void divide(string varname, uint64_t val1, uint64_t val2);
+    Variable* getMutable(string varname);
 		uint64_t get(string varname);
-    static uint64_t getFromAllManipulators(string varname);
+    static Variable* getFromAllManipulators(string varname);
+    static uint64_t getConstFromAllManipulators(string varname);
 		void tick();
 	private:
 		vector<string> varnames;

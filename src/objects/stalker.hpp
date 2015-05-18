@@ -9,21 +9,22 @@
 #include "manipulator.hpp"
 #include "../error.hpp"
 #include "object.hpp"
+#include "../voicelist.hpp"
 
 class Stalker : public Object
 {
   public:
     Stalker();
     void stalk();
-    char controlChar();
-    uint64_t controlNumber();
+    char controlChar(string varname);
+    uint64_t controlNumber(string varname);
     void actionChar(string varname);
     void actionNumber(string varname);
-    void echo(string str);
+    void echo();
     void distant();
     void personal();
     void paracusia();
-    const ObjectType type = OT_STALKER;
+    ObjectType getType() { return OT_STALKER; }
   private:
     void checkInitialized();
     bool initialized;

@@ -24,6 +24,7 @@ class MainObject
 		void consume(string name);
 		void empty();
     ObjectType getObjType(string name);
+    vector<Entropy*> getEntropies();
 private:
 		map<string, Object*> objects;
 };

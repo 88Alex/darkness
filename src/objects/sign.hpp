@@ -1,9 +1,13 @@
 #ifndef SIGN_HPP_INCLUDED
 #define SIGN_HPP_INCLUDED
 
+
+
 #include <string>
 #include "manipulator.hpp"
 #include "object.hpp"
+#include "mainobject.hpp"
+#include "../voicelist.hpp"
 
 class Sign : public Object
 {
@@ -12,14 +16,14 @@ class Sign : public Object
     Sign(string str);
     void scrawlCharacter(string varname);
     void scrawlNumber(string varname);
-    void scrawl(string varname);
+    void scrawl(string str);
     void tear();
     void tear(size_t n);
     void tearAll();
-    uint64_t observe();
-    uint64_t steal();
-    string read(bool eraseAfterRead);
-    const ObjectType type = OT_SIGN;
+    void observe(string varname);
+    void steal(string varname);
+    void read(bool eraseAfterRead);
+    ObjectType getType() { return OT_SIGN; }
   private:
     string val;
 };

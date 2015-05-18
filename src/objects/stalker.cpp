@@ -11,26 +11,26 @@ void Stalker::stalk()
   initialized = true;
 }
 
-char Stalker::controlChar()
+char Stalker::controlChar(string varname)
 {
   checkInitialized();
   char c;
   cin >> c;
-  return c;
+  Manipulator::getFromAllManipulators(varname)->setValue((int) c);
 }
 
-uint64_t Stalker::controlNumber()
+uint64_t Stalker::controlNumber(string varname)
 {
   checkInitialized();
   uint64_t i;
   cin >> i;
-  return i;
+  Manipulator::getFromAllManipulators(varname)->setValue(i);
 }
 
 void Stalker::actionChar(string varname)
 {
   checkInitialized();
-  uint64_t var = Manipulator::getFromAllManipulators(varname);
+  uint64_t var = Manipulator::getConstFromAllManipulators(varname);
   char c = static_cast<char>(var);
   if(isDistant) output << c;
   else cout << c;
@@ -39,16 +39,16 @@ void Stalker::actionChar(string varname)
 void Stalker::actionNumber(string varname)
 {
   checkInitialized();
-  uint64_t var = Manipulator::getFromAllManipulators(varname);
+  uint64_t var = Manipulator::getConstFromAllManipulators(varname);
   if(isDistant) output << var;
   else cout << var;
 }
 
-void Stalker::echo(string str)
+void Stalker::echo()
 {
   checkInitialized();
-  if(isDistant) output << str;
-  else cout << str;
+  if(isDistant) output << Voicelist::get()->read();
+  else cout << Voicelist::get()->read();
 }
 
 void Stalker::distant()

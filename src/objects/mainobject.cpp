@@ -1,5 +1,12 @@
 #include "mainobject.hpp"
 
+#define DEBUG
+#ifdef DEBUG
+#define DEBUG(code) code
+#else
+#define DEBUG(code)
+#endif
+
 MainObject::MainObject()
 {
 	objects = map<string, Object*>();
@@ -11,15 +18,19 @@ void MainObject::twist(ObjectType type, string name)
 	switch(type)
 	{
 		case OT_MANIPULATOR:
+      DEBUG(cout << "Creating new manipulator " << name << endl;)
 			objects[name] = new Manipulator();
 			break;
 		case OT_ENTROPY:
+      DEBUG(cout << "Creating new entropy " << name << endl;)
 			objects[name] = new Entropy();
 			break;
 		case OT_STALKER:
+      DEBUG(cout << "Creating new stalker " << name << endl;)
 			objects[name] = new Stalker();
 			break;
 		case OT_SIGN:
+      DEBUG(cout << "Creating new sign " << name << endl;)
 			objects[name] = new Sign();
 			break;
 		default:
@@ -61,7 +72,21 @@ ObjectType MainObject::getObjType(string name)
 {
   if(objects.count(name) < 1)
   {
+    DEBUG(cout << "Object " << name << " not found when queried for type" << endl;)
     return OT_NONE;
   }
-  return objects[name]->type;
+  return objects[name]->getType();
+}
+
+vector<Entropy*> MainObject::getEntropies()
+{
+  vector<Entropy*> entropies = vector<Entropy*>();
+  for(map<string, Object*>::iterator i = objects.begin(); i != objects.end(); ++i)
+  {
+    if(i->second->getType() == OT_ENTROPY)
+    {
+      entropies.push_back((Entropy*)i->second);
+    }
+  }
+  return entropies;
 }

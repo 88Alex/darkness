@@ -21,7 +21,7 @@ class Entropy : public Object
     uint stumble(string name);
     void illusion(string name);
     bool skipInstruction();
-    const ObjectType type = OT_ENTROPY;
+    ObjectType getType() { return OT_ENTROPY; }
   private:
     map<string, uint> labels;
     bool inIfThenElse; // are we in a choice/balance/reprogram block?

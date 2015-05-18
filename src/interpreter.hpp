@@ -7,6 +7,7 @@
 #include "error.hpp"
 #include "objects/mainobject.hpp"
 #include "objects/manipulator.hpp"
+#include "voicelist.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 

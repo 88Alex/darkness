@@ -5,7 +5,7 @@ typedef enum { OT_MANIPULATOR, OT_ENTROPY, OT_STALKER, OT_SIGN, OT_NONE } Object
 
 class Object{
   public:
-    const ObjectType type = OT_NONE;
+    virtual ObjectType getType() { return OT_NONE; }
 };
 
 #endif // #ifndef OBJECT_HPP_INCLUDED

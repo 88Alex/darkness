@@ -1,5 +1,12 @@
 #include "sign.hpp"
 
+#define DEBUG
+#ifdef DEBUG
+#define DEBUG(code) code
+#else
+#define DEBUG(code)
+#endif
+
 Sign::Sign() {}
 
 Sign::Sign(string str)
@@ -9,14 +16,14 @@ Sign::Sign(string str)
 
 void Sign::scrawlCharacter(string varname)
 {
-  uint64_t var = Manipulator::getFromAllManipulators(varname);
+  uint64_t var = Manipulator::getConstFromAllManipulators(varname);
   char c = static_cast<char>(var);
   val.append(1, c); // append 1 repetition of c
 }
 
 void Sign::scrawlNumber(string varname)
 {
-  uint64_t var = Manipulator::getFromAllManipulators(varname);
+  uint64_t var = Manipulator::getConstFromAllManipulators(varname);
   val.append(to_string(var));
 }
 
@@ -40,21 +47,20 @@ void Sign::tearAll()
   val = "";
 }
 
-uint64_t Sign::observe()
+void Sign::observe(string varname)
 {
-  return static_cast<uint64_t>(val[0]);
+  Manipulator::getFromAllManipulators(varname)->setValue(static_cast<uint64_t>(val[0]));
 }
 
-uint64_t Sign::steal()
+void Sign::steal(string varname)
 {
-  uint64_t result = observe();
+  observe(varname);
   tear();
-  return result;
 }
 
-string Sign::read(bool eraseAfterRead)
+void Sign::read(bool eraseAfterRead)
 {
   string result = val;
   if(eraseAfterRead) tearAll();
-  return result;
+  Voicelist::get()->enqueue(result);
 }
