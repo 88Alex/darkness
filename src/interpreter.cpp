@@ -100,7 +100,7 @@ void interpretManipulatorCommand(Manipulator *manipulator, vector<string> argume
     {
       size = INT;
     }
-    else if(arguments[4] == "64")
+    else if(arguments[3] == "64")
     {
       size = LONG;
     }
@@ -258,6 +258,7 @@ void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, uint ip
   if(arguments[0] == "choice")
   {
     if(arguments.size() < 4) throw Error();
+    DEBUG(cout << "Line 261 OK" << endl;)
     uint64_t val1, val2;
     if(isNumber(arguments[1]))
     {
@@ -275,6 +276,7 @@ void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, uint ip
     else if(arguments[2] == "<=") cmp = LTE;
     else if(arguments[2] == "!=" || arguments[2] == "<>") cmp = NE;
     else throw Error();
+    DEBUG(cout << "Line 279 OK" << endl;)
     if(isNumber(arguments[3]))
     {
       val2 = atoi(arguments[3].c_str());
@@ -283,15 +285,16 @@ void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, uint ip
     {
       val2 = Manipulator::getConstFromAllManipulators(arguments[3]);
     }
-    entropy->choice(val1, cmp, val2);
+    entropy->choice(val1, cmp, val2, ip);
+    DEBUG(cout << "Line 289 OK" << endl;)
   }
   else if(arguments[0] == "balance")
   {
-    entropy->balance();
+    entropy->balance(ip);
   }
   else if(arguments[0] == "reprogram")
   {
-    entropy->reprogram();
+    entropy->reprogram(ip);
   }
   else if(arguments[0] == "corpse")
   {

@@ -1,0 +1,27 @@
++fib hell
+fib$twist stalker creep
+fib$twist entropy cruelty
+fib$twist manipulator darkone
+creep$stalk
+creep$personal
+darkone$manufacture new 0 64 master
+darkone$manufacture this 0 64 servant new
+darkone$manufacture last 0 64 servant new
+darkone$manufacture ltr 0 8 master
+darkone$set this 1
+cruelty$corpse fate
+darkone$add new last this
+darkone$set last this
+darkone$set this new
+creep$action # this
+cruelty$choice this <= 1000
+darkone$set ltr 44
+creep$action ltr
+darkone$set ltr 32
+creep$action ltr
+cruelty$stumble fate
+cruelty$reprogram
+darkone$omnicide
+darkone$void
+fib$empty
+fib$apocalypse
