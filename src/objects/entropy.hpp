@@ -21,7 +21,7 @@ class Entropy : public Object
     void corpse(string name, uint ip); // ip is the instruction pointer to which the label points
     uint stumble(string name);
     void illusion(string name);
-    bool skipInstruction();
+    bool skipInstruction(uint ip);
     ObjectType getType() { return OT_ENTROPY; }
   private:
     map<string, uint> labels;

@@ -79,8 +79,16 @@ void interpretMainObjectCommand(MainObject *mainObject, vector<string> arguments
   }
 }
 
-void interpretManipulatorCommand(Manipulator *manipulator, vector<string> arguments)
+void interpretManipulatorCommand(Manipulator *manipulator, vector<string> arguments, MainObject* mainObject, uint ip)
 {
+  vector<Entropy*> entropies = mainObject->getEntropies();
+  for(int i = 0; i < entropies.size(); i++)
+  {
+    if(entropies[i]->skipInstruction(ip))
+    {
+      return;
+    }
+  }
   DEBUG(cout << "Executing manipulator command: " << arguments[0] << endl;)
   if(arguments[0] == "manufacture")
   {
@@ -252,13 +260,13 @@ void interpretManipulatorCommand(Manipulator *manipulator, vector<string> argume
   }
 }
 
-void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, uint ip)
+void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, MainObject* mainObject, uint ip)
 {
+  // NOTE: some entropy commands are not affected by SKIP
   DEBUG(cout << "Executing entropy command: " << arguments[0] << endl;)
   if(arguments[0] == "choice")
   {
     if(arguments.size() < 4) throw Error();
-    DEBUG(cout << "Line 261 OK" << endl;)
     uint64_t val1, val2;
     if(isNumber(arguments[1]))
     {
@@ -276,7 +284,6 @@ void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, uint ip
     else if(arguments[2] == "<=") cmp = LTE;
     else if(arguments[2] == "!=" || arguments[2] == "<>") cmp = NE;
     else throw Error();
-    DEBUG(cout << "Line 279 OK" << endl;)
     if(isNumber(arguments[3]))
     {
       val2 = atoi(arguments[3].c_str());
@@ -286,7 +293,6 @@ void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, uint ip
       val2 = Manipulator::getConstFromAllManipulators(arguments[3]);
     }
     entropy->choice(val1, cmp, val2, ip);
-    DEBUG(cout << "Line 289 OK" << endl;)
   }
   else if(arguments[0] == "balance")
   {
@@ -304,6 +310,14 @@ void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, uint ip
   }
   else if(arguments[0] == "stumble")
   {
+    vector<Entropy*> entropies = mainObject->getEntropies();
+    for(int i = 0; i < entropies.size(); i++)
+    {
+      if(entropies[i]->skipInstruction(ip))
+      {
+        return;
+      }
+    }
     if(arguments.size() < 2) throw Error();
     string lblname = arguments[1];
     uint newIp = entropy->stumble(lblname);
@@ -311,14 +325,30 @@ void interpretEntropyCommand(Entropy *entropy, vector<string> arguments, uint ip
   }
   else if(arguments[0] == "illusion")
   {
+    vector<Entropy*> entropies = mainObject->getEntropies();
+    for(int i = 0; i < entropies.size(); i++)
+    {
+      if(entropies[i]->skipInstruction(ip))
+      {
+        return;
+      }
+    }
     if(arguments.size() < 2) throw Error();
     string lblname = arguments[1];
     entropy->illusion(lblname);
   }
 }
 
-void interpretStalkerCommand(Stalker *stalker, vector<string> arguments, MainObject* mainObject)
+void interpretStalkerCommand(Stalker *stalker, vector<string> arguments, MainObject* mainObject, uint ip)
 {
+  vector<Entropy*> entropies = mainObject->getEntropies();
+  for(int i = 0; i < entropies.size(); i++)
+  {
+    if(entropies[i]->skipInstruction(ip))
+    {
+      return;
+    }
+  }
   DEBUG(cout << "Executing stalker command: " << arguments[0] << endl;)
   if(arguments[0] == "stalk")
   {
@@ -368,8 +398,16 @@ void interpretStalkerCommand(Stalker *stalker, vector<string> arguments, MainObj
   }
 }
 
-void interpretSignCommand(Sign *sign, vector<string> arguments, MainObject *mainObject)
+void interpretSignCommand(Sign *sign, vector<string> arguments, MainObject *mainObject, uint ip)
 {
+  vector<Entropy*> entropies = mainObject->getEntropies();
+  for(int i = 0; i < entropies.size(); i++)
+  {
+    if(entropies[i]->skipInstruction(ip))
+    {
+      return;
+    }
+  }
   DEBUG(cout << "Executing sign command: " << arguments[0] << endl;)
   if(arguments[0] == "scrawl")
   {
@@ -441,15 +479,7 @@ void interpretSignCommand(Sign *sign, vector<string> arguments, MainObject *main
 
 void interpretCommand(string line, string mainObjName, MainObject *mainObject, int ip)
 {
-  // first check whether or not to skip this line
-  vector<Entropy*> entropies = mainObject->getEntropies();
-  for(int i = 0; i < entropies.size(); i++)
-  {
-    if(entropies[i]->skipInstruction())
-    {
-      return;
-    }
-  }
+  DEBUG(cout << "LINE " << ip << endl;)
   string objname = "";
   size_t foundDollarSign = line.find("$", 0);
   if(foundDollarSign == string::npos)
@@ -474,16 +504,16 @@ void interpretCommand(string line, string mainObjName, MainObject *mainObject, i
   switch(mainObject->getObjType(objname))
   {
     case OT_MANIPULATOR:
-      interpretManipulatorCommand((Manipulator*)object, arguments);
+      interpretManipulatorCommand((Manipulator*)object, arguments, mainObject, ip);
       break;
     case OT_ENTROPY:
-      interpretEntropyCommand((Entropy*)object, arguments, ip);
+      interpretEntropyCommand((Entropy*)object, arguments, mainObject, ip);
       break;
     case OT_STALKER:
-      interpretStalkerCommand((Stalker*)object, arguments, mainObject);
+      interpretStalkerCommand((Stalker*)object, arguments, mainObject, ip);
       break;
     case OT_SIGN:
-      interpretSignCommand((Sign*)object, arguments, mainObject);
+      interpretSignCommand((Sign*)object, arguments, mainObject, ip);
       break;
     default:
       DEBUG(cout << "Object " << objname << " has undefined type" << endl;)
@@ -526,11 +556,16 @@ string parseFirstLine(string firstLine)
 
 int runScript(vector<string> lines)
 {
+  lines.insert(lines.begin(), ""); // a blank line just to align IP with line numbers
   int sanity = 100;
-  string mainObjName = parseFirstLine(lines[0]);
+  string mainObjName = parseFirstLine(lines[1]);
   MainObject *mainObject = new MainObject();
-  for(int i = 1; i < lines.size(); i++)
+  for(int i = 2; i < lines.size(); i++)
   {
+    if(lines[i][0] == '|')
+    {
+      continue;
+    }
     try
     {
       interpretCommand(lines[i], mainObjName, mainObject, i);

@@ -100,8 +100,11 @@ void Manipulator::manufactureServant(string varname, uint disposition, VarSize s
 {
 	if(count(varnames.begin(), varnames.end(), varname) > 0) throw Error();
 	Variable* var = new Variable(size, 0, disposition, false);
-	if(variable(mastername)->isMaster()) variable(mastername)->addServant(varname, var);
-	varnames.push_back(varname);
+  if(mastername != "none")
+  {
+	  if(variable(mastername)->isMaster()) variable(mastername)->addServant(varname, var);
+  }
+  varnames.push_back(varname);
 	variables.push_back(var);
 }
 
