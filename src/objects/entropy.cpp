@@ -10,10 +10,12 @@
 Entropy::Entropy()
 {
   labels = map<string, uint>();
-  inIfThenElse = false;
-  choiceIP = -1;
-  balanceIP = -1;
-  reprogramIP = -1;
+  choiceDefined = false;
+  choiceIP = 0;
+  balanceDefined = false;
+  balanceIP = 0;
+  reprogramDefined = false;
+  reprogramIP = 0;
 }
 
 void Entropy::choice(uint64_t val1, Comparator comp, uint64_t val2, uint ip)
@@ -23,7 +25,9 @@ void Entropy::choice(uint64_t val1, Comparator comp, uint64_t val2, uint ip)
     // nested if-then-else is not allowed using the same entropy
     throw Error();
   }
-  inBalance = false;
+  choiceDefined = true;
+  balanceDefined = false;
+  reprogramDefined = false;
   choiceIP = ip;
   switch(comp)
   {
@@ -50,14 +54,13 @@ void Entropy::choice(uint64_t val1, Comparator comp, uint64_t val2, uint ip)
 
 void Entropy::balance(uint ip)
 {
-  inBalance = true;
+  balanceDefined = true;
   balanceIP = ip;
 }
 
 void Entropy::reprogram(uint ip)
 {
-  inIfThenElse = false;
-  inBalance = false;
+  reprogramDefined = true;
   reprogramIP = ip;
 }
 
@@ -80,12 +83,55 @@ bool Entropy::skipInstruction(uint ip)
 {
   // either the conditional is true and we are in the first part,
   // or it is false and we are after the balance instruction.
-  if(ip < choiceIP || reprogramIP <= ip) return false;
-  if((ip < balanceIP && isConditionalTrue) || (balanceIP < ip && !isConditionalTrue))
+  if(!choiceDefined) return false;
+  if(balanceDefined)
   {
-    DEBUG(cout << "Skipping line " << ip << ": choiceIP = " << choiceIP << "; balanceIP = "
-          << balanceIP << "; reprogramIP =" << reprogramIP << endl;)
-    return true;
+    if(choiceIP < ip && ip < balanceIP)
+    {
+      DEBUG(cout << "Skipping because conditional is false: ip = " << ip << "; choiceIP = " << choiceIP << "; balanceIP = " << balanceIP << endl;)
+      return !isConditionalTrue;
+    }
+    else if(reprogramDefined)
+    {
+      if(balanceIP < ip && ip < reprogramIP)
+      {
+        DEBUG(cout << "Skipping because conditional is true: ip = " << ip << "; choiceIP = " << choiceIP << "; balanceIP = " << balanceIP
+              << "; reprogramIP = " << reprogramIP << endl;)
+        return isConditionalTrue;
+      }
+    }
+    else
+    {
+      if(balanceIP < ip)
+      {
+        DEBUG(cout << "Skipping because conditional is true: ip = " << ip << "; choiceIP = " << choiceIP << "; balanceIP = " << balanceIP << endl;)
+        return isConditionalTrue;
+      }
+    }
+  }
+  else
+  {
+    if(reprogramDefined)
+    {
+      if(choiceIP < ip && ip < reprogramIP)
+      {
+        DEBUG(cout << "Skipping because conditional is false: ip = " << ip << "; choiceIP = " << choiceIP << "; reprogramIP = " << reprogramIP << endl;)
+        return !isConditionalTrue;
+      }
+    }
+    else
+    {
+      if(choiceIP < ip)
+      {
+        DEBUG(cout << "Skipping because conditional is false: ip = " << ip << "; choiceIP = " << choiceIP << endl;)
+        return !isConditionalTrue;
+      }
+    }
   }
   return false;
+}
+
+void Entropy::setIP(uint ip)
+{
+  currentIP = ip;
 }

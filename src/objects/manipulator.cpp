@@ -2,6 +2,15 @@
 
 vector<Manipulator*> Manipulator::manipulators = vector<Manipulator*>();
 
+bool isNumber(string str)
+{
+  boost::regex numberRegex = boost::regex();
+  numberRegex.assign("[0-9]+"); // only natural numbers and 0
+  boost::cmatch m; // required by Boost- NOT USED
+  bool result = boost::regex_match(str.c_str(), m, numberRegex);
+  return result;
+}
+
 Variable::Variable(VarSize varsize, uint64_t val, uint disposition, bool master)
 {
 	size = varsize;
@@ -158,35 +167,60 @@ void Manipulator::chaos(string varname)
 	variable(varname)->setValue(distribution(generator));
 }
 
-void Manipulator::set(string varname, uint64_t value)
+void Manipulator::set(string dest, string source)
 {
-	variable(varname)->setValue(value);
+	checkDispositionConflicts(dest, source);
+  variable(dest)->setValue(get(source));
 }
 
-void Manipulator::add(string varname, uint64_t val1, uint64_t val2)
+void Manipulator::add(string varname, string arg1, string arg2)
 {
-	variable(varname)->setValue(val1 + val2);
+	if(!isNumber(arg1) || !isNumber(arg2))
+  {
+    checkDispositionConflicts(varname, arg1);
+    checkDispositionConflicts(varname, arg2);
+    checkDispositionConflicts(arg1, arg2);
+  }
+  variable(varname)->setValue(get(arg1) + get(arg2));
 }
 
-void Manipulator::subtract(string varname, uint64_t val1, uint64_t val2)
+void Manipulator::subtract(string varname, string arg1, string arg2)
 {
-	variable(varname)->setValue(val1 - val2);
+	if(!isNumber(arg1) || !isNumber(arg2))
+  {
+    checkDispositionConflicts(varname, arg1);
+    checkDispositionConflicts(varname, arg2);
+    checkDispositionConflicts(arg1, arg2);
+  }
+  variable(varname)->setValue(get(arg1) - get(arg2));
 }
 
-void Manipulator::multiply(string varname, uint64_t val1, uint64_t val2)
+void Manipulator::multiply(string varname, string arg1, string arg2)
 {
-	variable(varname)->setValue(val1 * val2);
+	if(!isNumber(arg1) || !isNumber(arg2))
+  {
+    checkDispositionConflicts(varname, arg1);
+    checkDispositionConflicts(varname, arg2);
+    checkDispositionConflicts(arg1, arg2);
+  }
+  variable(varname)->setValue(get(arg1) * get(arg2));
 }
 
-void Manipulator::divide(string varname, uint64_t val1, uint64_t val2)
+void Manipulator::divide(string varname, string arg1, string arg2)
 {
-	if(val2 == 0)
+	if(get(arg2) == 0)
 	{
 		variable(varname)->setValue(42); // EASTER EGG
 	}
 	else
 	{
-		variable(varname)->setValue(val1 / val2);
+		if(!isNumber(arg1) || !isNumber(arg2))
+    {
+      checkDispositionConflicts(varname, arg1);
+      checkDispositionConflicts(varname, arg2);
+      checkDispositionConflicts(arg1, arg2);
+    }
+    variable(varname)->setValue(get(arg1) / get(arg2));
 	}
 }
 
@@ -197,7 +231,11 @@ Variable* Manipulator::getMutable(string varname)
 
 uint64_t Manipulator::get(string varname)
 {
-	return variable(varname)->getValue();
+	if(isNumber(varname))
+  {
+    return atoi(varname.c_str());
+  }
+  return variable(varname)->getValue();
 }
 
 Variable* Manipulator::getFromAllManipulators(string varname)
@@ -248,4 +286,17 @@ Variable* Manipulator::variable(string varname)
 	{
 		throw Error();
 	}
+}
+
+void Manipulator::checkDispositionConflicts(string var1, string var2)
+{
+  if(isNumber(var1) || isNumber(var2)) return;
+  Variable* var1_ = getMutable(var1);
+  Variable* var2_ = getMutable(var2);
+  int dispositionDifference = var1_->getDisposition() - var2_->getDisposition();
+  if(dispositionDifference < -1 || 1 < dispositionDifference)
+  {
+    kill(var1);
+    kill(var2);
+  }
 }

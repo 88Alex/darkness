@@ -7,12 +7,15 @@
 #include <typeinfo>
 #include <random>
 #include <algorithm>
+#include <boost/regex.hpp>
 #include "object.hpp"
 #include "../error.hpp"
 
 using namespace std;
 
 typedef enum { BYTE = 8, SHORT = 16, INT = 32, LONG = 64 } VarSize;
+
+bool isNumber(string str);
 
 class Variable
 {
@@ -48,11 +51,11 @@ class Manipulator : public Object
 		void genocide(uint disposition);
 		void omnicide();
 		void chaos(string varname);
-		void set(string varname, uint64_t value);
-		void add(string varname, uint64_t val1, uint64_t val2);
-		void subtract(string varname, uint64_t val1, uint64_t val2);
-		void multiply(string varname, uint64_t val1, uint64_t val2);
-		void divide(string varname, uint64_t val1, uint64_t val2);
+		void set(string dest, string source);
+		void add(string varname, string arg1, string arg2);
+		void subtract(string varname, string arg1, string arg2);
+		void multiply(string varname, string arg1, string val2);
+		void divide(string varname, string arg1, string val2);
     Variable* getMutable(string varname);
 		uint64_t get(string varname);
     static Variable* getFromAllManipulators(string varname);
@@ -64,6 +67,7 @@ class Manipulator : public Object
 		vector<Variable*> variables;
 		Variable* variable(string varname);
     static vector<Manipulator*> manipulators;
+    void checkDispositionConflicts(string var1, string var2);
 };
 
 #endif // #ifndef MANIPULATOR_HPP_INCLUDED

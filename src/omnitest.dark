@@ -1,0 +1,175 @@
++test hell
+|Initialize objects|
+test$twist manipulator overseer
+test$twist manipulator leader
+test$twist entropy fate
+test$twist entropy path
+test$twist stalker spy
+test$twist sign bbs
+test$twist sign keep_out
+|Define a few variables|
+overseer$manufacture politician 0 64 master
+overseer$manufacture person1 0 32 servant politician
+overseer$manufacture person2 0 16 servant politician
+overseer$manufacture person3 0 8 servant none
+leader$manufacture person1 0 16 master
+leader$manufacture test1 0 32 servant person1
+leader$manufacture test2 0 32 master
+leader$manufacture test3 0 32 servant test2
+leader$manufacture hater 5 8 master
+leader$manufacture hated 9 8 master
+|Check that stalker is not initialized|
+|Should give depressing errors|
+|spy$action politician
+|spy$control politician
+|Initialize stalker|
+spy$stalk
+|Test io modes with fibonacci series|
+|Should print Press any key to continue..., then will display the fibonacci series|
+spy$distant
+overseer$set person1 10
+leader$set test1 0
+leader$set test2 1
+bbs$scrawl " ,
+fate$corpse fibonacci_1
+leader$add test3 test1 test2
+leader$set test1 test2
+leader$set test2 test3
+spy$action # test1
+bbs$read ~
+spy$echo
+fate$choice test1 < 1000000
+fate$stumble fibonacci_1
+fate$reprogram
+fate$illusion fibonacci_1
+bbs$tear *
+bbs$scrawl " Press any key to continue...
+bbs$read
+spy$personal
+spy$echo
+spy$action person1
+spy$distant
+spy$control test1
+spy$action person1
+spy$paracusia
+|Test that choices work and nested choices are allowed|
+|Should display True,True,False,True,True,True,False|
+spy$personal
+bbs$scrawl " True
+bbs$scrawl person1
+keep_out$scrawl " False
+keep_out$scrawl person1
+fate$choice 0 = 0
+bbs$read ~
+spy$echo
+fate$reprogram
+fate$choice 0 = 0
+bbs$read ~
+spy$echo
+fate$balance
+keep_out$read ~
+spy$echo
+fate$reprogram
+fate$choice 0 <> 0
+bbs$read ~
+spy$echo
+fate$balance
+keep_out$read ~
+spy$echo
+fate$reprogram
+fate$choice person2 = person3
+path$choice person2 = 0
+bbs$read ~
+bbs$read ~
+spy$echo
+spy$echo
+path$balance
+bbs$read ~
+keep_out$read ~
+spy$echo
+spy$echo
+path$reprogram
+fate$balance
+path$choice person2 = 0
+keep_out$read ~
+bbs$read ~
+spy$echo
+spy$echo
+path$balance
+keep_out$read ~
+keep_out$read ~
+spy$echo
+spy$echo
+path$reprogram
+fate$reprogram
+fate$choice person2 = person3
+path$choice person2 = 1
+bbs$read ~
+bbs$read ~
+spy$echo
+spy$echo
+path$balance
+bbs$read ~
+keep_out$read ~
+spy$echo
+spy$echo
+path$reprogram
+fate$balance
+path$choice person2 = 1
+keep_out$read ~
+bbs$read ~
+spy$echo
+spy$echo
+path$balance
+keep_out$read ~
+keep_out$read ~
+spy$echo
+spy$echo
+path$reprogram
+fate$reprogram
+bbs$tear *
+keep_out$tear *
+|Test Randomization|
+overseer$chaos person2
+spy$action # person2
+spy$action person1
+|Test getting rid of master variable|
+overseer$suicide politician
+|Test garbage collect|
+overseer$void
+|Test sign functionality|
+|Shoud output ello, world!,world!,w,orld!,orld!,|
+leader$set person1 10
+bbs$tear *
+bbs$scrawl " Hello, world!
+bbs$scrawl person1
+bbs$tear
+bbs$read ~
+spy$echo
+bbs$tear 6
+bbs$read ~
+spy$echo
+bbs$observe test1
+spy$action test1
+spy$action person1
+bbs$steal test1
+bbs$read ~
+spy$echo
+bbs$read
+spy$echo
+bbs$read
+spy$echo
+|Test disposition conflict|
+leader$set hater hated
+|Test murphy's law|
+spy$action /THIS/IS/NOT/A/VALID/VARIABLE/NAME
+|Cleanup|
+test$twist manipulator final
+final$manufacture temporary 0 8 master
+final$empty
+test$consume final
+test$consume spy
+test$consume fate
+test$consume keep_out
+leader$suicide test3
+|Should show overseer melting person3, overseer dying, leader melting person1 test1 test2, leader dying, path, bbs|

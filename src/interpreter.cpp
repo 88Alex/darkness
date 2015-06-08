@@ -24,15 +24,6 @@ class GotoEvent : public exception
   uint ip;
 };
 
-bool isNumber(string str)
-{
-  boost::regex numberRegex = boost::regex();
-  numberRegex.assign("[0-9]+"); // only natural numbers and 0
-  boost::cmatch m; // required by Boost- NOT USED
-  bool result = boost::regex_match(str.c_str(), m, numberRegex);
-  return result;
-}
-
 void interpretMainObjectCommand(MainObject *mainObject, vector<string> arguments)
 {
   DEBUG(cout << "Executing main object command: " << arguments[0] << endl;)
@@ -159,104 +150,27 @@ void interpretManipulatorCommand(Manipulator *manipulator, vector<string> argume
   else if(arguments[0] == "set")
   {
     if(arguments.size() < 3) throw Error();
-    uint64_t val;
-    if(isNumber(arguments[2]))
-    {
-      val = atoi(arguments[2].c_str());
-    }
-    else
-    {
-      val = manipulator->get(arguments[2]);
-    }
-    manipulator->set(arguments[1], val);
+    manipulator->set(arguments[1], arguments[2]);
   }
   else if(arguments[0] == "add")
   {
     if(arguments.size() < 4) throw Error();
-    uint64_t val1, val2;
-    if(isNumber(arguments[2]))
-    {
-      val1 = atoi(arguments[2].c_str());
-    }
-    else
-    {
-      val1 = manipulator->get(arguments[2]);
-    }
-    if(isNumber(arguments[3]))
-    {
-      val2 = atoi(arguments[3].c_str());
-    }
-    else
-    {
-      val2 = manipulator->get(arguments[3]);
-    }
-    manipulator->add(arguments[1], val1, val2);
+    manipulator->add(arguments[1], arguments[2], arguments[3]);
   }
   else if(arguments[0] == "subtract")
   {
     if(arguments.size() < 4) throw Error();
-    uint64_t val1, val2;
-    if(isNumber(arguments[2]))
-    {
-      val1 = atoi(arguments[2].c_str());
-    }
-    else
-    {
-      val1 = manipulator->get(arguments[2]);
-    }
-    if(isNumber(arguments[3]))
-    {
-      val2 = atoi(arguments[3].c_str());
-    }
-    else
-    {
-      val2 = manipulator->get(arguments[3]);
-    }
-    manipulator->subtract(arguments[1], val1, val2);
+    manipulator->subtract(arguments[1], arguments[2], arguments[3]);
   }
   else if(arguments[0] == "multiply")
   {
     if(arguments.size() < 4) throw Error();
-    uint64_t val1, val2;
-    if(isNumber(arguments[2]))
-    {
-      val1 = atoi(arguments[2].c_str());
-    }
-    else
-    {
-      val1 = manipulator->get(arguments[2]);
-    }
-    if(isNumber(arguments[3]))
-    {
-      val2 = atoi(arguments[3].c_str());
-    }
-    else
-    {
-      val2 = manipulator->get(arguments[3]);
-    }
-    manipulator->multiply(arguments[1], val1, val2);
+    manipulator->multiply(arguments[1], arguments[2], arguments[3]);
   }
   else if(arguments[0] == "divide")
   {
     if(arguments.size() < 4) throw Error();
-    uint64_t val1, val2;
-    if(isNumber(arguments[2]))
-    {
-      val1 = atoi(arguments[2].c_str());
-    }
-    else
-    {
-      val1 = manipulator->get(arguments[2]);
-    }
-    if(isNumber(arguments[3]))
-    {
-      val2 = atoi(arguments[3].c_str());
-    }
-    else
-    {
-      val2 = manipulator->get(arguments[3]);
-    }
-    manipulator->divide(arguments[1], val1, val2);
+    manipulator->divide(arguments[1], arguments[2], arguments[3]);
   }
 }
 
@@ -480,6 +394,8 @@ void interpretSignCommand(Sign *sign, vector<string> arguments, MainObject *main
 void interpretCommand(string line, string mainObjName, MainObject *mainObject, int ip)
 {
   DEBUG(cout << "LINE " << ip << endl;)
+  // NOTE: The reason instruction skips are not checked here
+  // is that some entropy instructions ignore skips.
   string objname = "";
   size_t foundDollarSign = line.find("$", 0);
   if(foundDollarSign == string::npos)

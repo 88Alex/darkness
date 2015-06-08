@@ -23,14 +23,14 @@ class Entropy : public Object
     void illusion(string name);
     bool skipInstruction(uint ip);
     ObjectType getType() { return OT_ENTROPY; }
+    void setIP(uint ip);
   private:
     map<string, uint> labels;
-    bool inIfThenElse; // are we in a choice/balance/reprogram block?
-    bool isConditionalTrue; // is the choice conditional true?
-    bool inBalance; // have we reached the balance instruction yet?
+    bool choiceDefined, balanceDefined, reprogramDefined, isConditionalTrue;
     uint choiceIP;
     uint balanceIP;
     uint reprogramIP;
+    uint currentIP;
 };
 
 #endif // #ifndef ENTROPY_HPP_INCLUDED
