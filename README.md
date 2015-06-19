@@ -1,14 +1,10 @@
-# Darkness
+# Darkness v0.1.0-ALPHA
 
 Darkness is an interpreter for the <a href="http://esolangs.org/wiki/Dark">Dark</a> esoteric programming language.
 
 ## Usage
 
 `darkness [options] file.dark`
-
-### Options:
-
-- `-wimpmode`: Runs the program in wimpmode, as per the Dark specification.
 
 ## License
 
