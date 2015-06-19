@@ -1,0 +1,21 @@
++factorial hell
+factorial$twist stalker s1
+factorial$twist manipulator m1
+factorial$twist entropy e1
+s1$stalk
+s1$personal
+m1$manufacture input 1 16 master
+m1$manufacture counter 1 16 master
+m1$manufacture result 1 64 master
+s1$control # input
+m1$set counter 1
+m1$set result 1
+e1$corpse c1
+m1$add counter counter 1
+m1$multiply result result counter
+e1$choice counter < input
+e1$stumble c1
+e1$reprogram
+s1$action # result
+factorial$empty
+factorial$apocalypse

@@ -1,6 +1,6 @@
 #include "interpreter.hpp"
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DEBUG(code) code
 #else
