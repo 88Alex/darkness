@@ -66,9 +66,9 @@ void Stalker::personal()
 void Stalker::paracusia()
 {
   checkInitialized();
-  output.seekg (0, output.end);
+  output.seekg(0, output.end);
   int length = output.tellg();
-  output.seekg (0, output.beg);
+  output.seekg(0, output.beg);
   char* data = new char[length + 1];
   output.read(data, length);
   data[length] = 0;
